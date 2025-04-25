@@ -41,14 +41,14 @@ services:
     build:
       context: ./my-react-app
       dockerfile: Dockerfile
+      args:
+        REACT_APP_API_URL: http://quiz-app-backend:8000
+        REACT_APP_WS_URL: ws://quiz-app-backend:8000/ws
+        REACT_APP_APP_ENV: production
     ports:
       - "3001:3000"
     depends_on:
       - quiz-app-backend
-    environment:
-      - API_URL=http://quiz-app-backend:8000
-      - WS_URL=ws://quiz-app-backend:8000/ws
-      - APP_ENV=production
     networks:
       - quiz-app-network
     restart: always
