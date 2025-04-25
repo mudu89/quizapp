@@ -10,6 +10,16 @@ COPY package*.json ./
 # Install dependencies
 RUN npm install
 
+# Accept build-time arguments from docker-compose
+ARG REACT_APP_API_URL
+ARG REACT_APP_WS_URL
+ARG REACT_APP_APP_ENV
+
+# Set environment variables for React
+ENV REACT_APP_API_URL=$REACT_APP_API_URL
+ENV REACT_APP_WS_URL=$REACT_APP_WS_URL
+ENV REACT_APP_APP_ENV=$REACT_APP_APP_ENV
+
 # Copy the rest of the application
 COPY . .
 
