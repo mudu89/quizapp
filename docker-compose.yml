@@ -1,0 +1,61 @@
+version: '3.8'
+
+services:
+  quiz-app-db:
+    build:
+      context: ./quiz-app-db
+      dockerfile: Dockerfile
+    container_name: quiz-app-db
+    ports:
+      - "5434:5432"
+    environment:
+      POSTGRES_USER: developer
+      POSTGRES_PASSWORD: developer
+      POSTGRES_DB: sky-quiz-db
+    volumes:
+      - quiz-db-data:/var/lib/postgresql/data
+    networks:
+      - quiz-app-network
+    restart: always
+
+  quiz-app-backend:
+    build:
+      context: ./quiz-app-backend
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    depends_on:
+      - quiz-app-db
+    environment:
+      - APP_ENV=production
+      - DB_HOST=quiz-app-db
+      - DB_PORT=5432
+      - DB_NAME=sky-quiz-db
+      - DB_USER=developer
+      - DB_PASSWORD=developer
+    networks:
+      - quiz-app-network
+    restart: always
+
+  my-react-app:
+    build:
+      context: ./my-react-app
+      dockerfile: Dockerfile
+    ports:
+      - "3001:3000"
+    depends_on:
+      - quiz-app-backend
+    environment:
+      - API_URL=http://quiz-app-backend:8000
+      - WS_URL=ws://quiz-app-backend:8000/ws
+      - APP_ENV=production
+    networks:
+      - quiz-app-network
+    restart: always
+
+volumes:
+  quiz-db-data:
+
+networks:
+  quiz-app-network:
+    driver: bridge
