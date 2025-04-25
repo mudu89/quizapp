@@ -37,6 +37,7 @@ class Login extends Component<LoginProps, LoginState> {
     const { email, password, userId, username } = this.state;
 
     try {
+      console.log(`${API_URL}`)
       const response = await fetch(`${API_URL}/login/`, {
         method: 'POST',
         headers: {
